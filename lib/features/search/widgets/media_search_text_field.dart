@@ -34,6 +34,7 @@ class _MediaSearchTextFieldState extends State<MediaSearchTextField> {
             child: TextField(
               key: const Key('__MediaSearchTextField__'),
               controller: _searchCtrl,
+              style: Theme.of(context).textTheme.titleLarge,
               decoration: InputDecoration(
                 hintText: 'Search',
                 suffixIcon: IconButton(
@@ -43,22 +44,6 @@ class _MediaSearchTextFieldState extends State<MediaSearchTextField> {
               ),
               textInputAction: TextInputAction.done,
               onEditingComplete: () async {
-                if (_searchCtrl.text.isNotEmpty) {
-                  await context
-                      .read<MediaSearchCubit>()
-                      .searchSong(_searchCtrl.text);
-                  if (context.mounted) {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                  }
-                }
-              },
-            ),
-          ),
-          Expanded(
-            child: IconButton(
-              key: const Key('__searchButton__'),
-              icon: const Icon(Icons.search),
-              onPressed: () async {
                 if (_searchCtrl.text.isNotEmpty) {
                   await context
                       .read<MediaSearchCubit>()

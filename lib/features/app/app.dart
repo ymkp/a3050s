@@ -1,5 +1,8 @@
+import 'package:a3050s/features/app/blocs/app_cubit.dart';
+import 'package:a3050s/features/media_player/blocs/mp_audio_cubit.dart';
 import 'package:a3050s/features/search/blocs/media_search_cubit.dart';
 import 'package:a3050s/features/search/repositories/media_search_repository.dart';
+import 'package:a3050s/theme/app_theme.dart';
 import 'package:a3050s/utils/methods/aliases.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -18,14 +21,20 @@ class App extends StatelessWidget {
       ],
       child: MultiBlocProvider(
         providers: [
+          BlocProvider(create: (context) => AppCubit()),
           BlocProvider(
             create: (context) =>
                 MediaSearchCubit(context.read<MediaSearchRepository>()),
           ),
+          BlocProvider(create: (context) => MPAudioCubit())
         ],
         child: MaterialApp.router(
           routerDelegate: AutoRouterDelegate(
             appRouter,
+          ),
+          theme: createTheme(
+            // color: const Color(0xFF173656),
+            brightness: Brightness.dark,
           ),
           routeInformationParser: appRouter.defaultRouteParser(),
         ),

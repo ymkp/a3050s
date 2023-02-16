@@ -1,4 +1,5 @@
 import 'package:a3050s/features/app/models/media_model.dart';
+import 'package:a3050s/utils/constants.dart';
 import 'package:a3050s/utils/methods/aliases.dart';
 
 class MediaSearchAPI {
@@ -9,7 +10,7 @@ class MediaSearchAPI {
         'term': term,
         'media': 'music',
         'attribute': 'artistTerm',
-        'limit': '10',
+        'limit': $constants.api.maxItemToBeFetchedAtOneTime,
         'country': 'ID'
       },
     ) as Map<String, dynamic>;

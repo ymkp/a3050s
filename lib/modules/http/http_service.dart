@@ -3,13 +3,14 @@ import 'package:a3050s/utils/helpers/toast_helper.dart';
 import 'package:a3050s/utils/methods/aliases.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:injectable/injectable.dart';
 
 const int timeoutSeconds = 30;
 
+@singleton
 class HTTPService {
   HTTPService() {
     url = dotenv.env['URL'] ?? '';
-    logIt.info('http service initiated : $url');
   }
 
   late final String url;

@@ -30,6 +30,7 @@ linter:
     sort_pub_dependencies: false
     lines_longer_than_80_chars: false
     flutter_style_todos: false
+    no_default_cases: false
 
 dart_code_metrics:
   metrics:
