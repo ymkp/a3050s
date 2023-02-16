@@ -20,6 +20,7 @@ dependencies:
   injectable: ^2.1.0
   json_annotation: ^4.8.0
   path_provider: ^2.0.12
+  rxdart: ^0.27.7
   universal_platform: ^1.0.0+1
   url_strategy: ^0.2.0
 

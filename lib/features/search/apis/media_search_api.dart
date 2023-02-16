@@ -17,8 +17,11 @@ class MediaSearchAPI {
     final arr = (res['results'] is List)
         ? res['results'] as List<dynamic>
         : <Map<String, dynamic>>[];
-    return arr
-        .map((a) => MediaModel.fromJson(a as Map<String, dynamic>))
+    final result =
+        arr.map((a) => MediaModel.fromJson(a as Map<String, dynamic>)).toList();
+
+    return result
+        .where((e) => e.previewUrl != null && e.kind == 'song')
         .toList();
   }
 }

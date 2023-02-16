@@ -1,10 +1,13 @@
 import 'dart:async';
 
 import 'package:a3050s/features/app/models/media_model.dart';
+import 'package:a3050s/features/media_player/models/position_data.dart';
+import 'package:a3050s/utils/methods/aliases.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:rxdart/rxdart.dart';
 
 part 'mp_audio_state.dart';
 part 'mp_audio_cubit.freezed.dart';
@@ -15,15 +18,29 @@ class MPAudioCubit extends Cubit<MPAudioState> {
     init();
   }
 
-  StreamSubscription? _audioStatusSub;
-  StreamSubscription? _indexSub;
-  StreamSubscription? _songStateSub;
+  StreamSubscription<PlayerState>? _audioStatusSub;
+  StreamSubscription<int?>? _indexSub;
 
-  final AudioPlayer _audioPlayer = AudioPlayer();
+  final AudioPlayer _player = AudioPlayer();
+
+  bool get hasPrevious => _player.hasPrevious;
+  bool get hasNext => _player.hasNext;
+
+  Stream<PositionData> get positionDataStream =>
+      Rx.combineLatest3<Duration, Duration, Duration?, PositionData>(
+        _player.positionStream,
+        _player.bufferedPositionStream,
+        _player.durationStream,
+        (position, bufferedPosition, duration) => PositionData(
+          position,
+          bufferedPosition,
+          duration ?? Duration.zero,
+        ),
+      );
 
   void init() {
     _audioStatusSub?.cancel();
-    _audioStatusSub = _audioPlayer.playerStateStream.listen(
+    _audioStatusSub = _player.playerStateStream.listen(
       (playerState) {
         final processingState = playerState.processingState;
         switch (processingState) {
@@ -56,116 +73,105 @@ class MPAudioCubit extends Cubit<MPAudioState> {
     );
 
     _indexSub?.cancel();
-    _indexSub = _audioPlayer.currentIndexStream.listen(
+    _indexSub = _player.currentIndexStream.listen(
       (index) {
         if (index != null) {
           emit(state.copyWith(currentIdx: index));
         }
       },
     );
-
-    _songStateSub?.cancel();
-    // _songStateSub = songCubit.stream.listen(
-    //   (songState) {
-    //     songState.status.maybeWhen(
-    //       success: () async {
-    //         if (state.playList.isEmpty) {
-    //           await loadPlayList(playList: songState.songs);
-    //           emit(state.copyWith(playList: songState.songs));
-    //           _canReloadPlayList = false;
-    //         } else {
-    //           _canReloadPlayList = true;
-    //         }
-    //         return;
-    //       },
-    //       orElse: () {},
-    //     );
-    //   },
-    // );
   }
 
   Future<void> loadPlayList({
-    required List<MediaModel> playList,
+    required List<MediaModel> playlist,
     int index = 0,
   }) async {
-    emit(state.copyWith(playlist: playList));
+    logIt.warn('playlist : ${playlist.length}, index : $index');
+    emit(state.copyWith(playlist: playlist));
     try {
-      await _audioPlayer.setAudioSource(
+      await _player.setAudioSource(
         ConcatenatingAudioSource(
-          children: playList
-              .map((song) => AudioSource.uri(Uri.parse(song.previewUrl!)))
+          children: playlist
+              .map(
+                (song) => AudioSource.uri(
+                  Uri.parse(
+                    song.previewUrl!,
+                    // .replaceAll('https', 'http'),
+                  ),
+                ),
+              )
               .toList(),
         ),
         initialIndex: index,
       );
-    } catch (_) {
+    } catch (err, st) {
+      logIt.error('err', error: err, stackTrace: st);
       emit(state.copyWith(status: const MPAudioStateStatus.failure()));
     }
     return;
   }
 
+  Future<void> seek(Duration? position, {int? index}) async {
+    await _player.seek(position, index: index);
+  }
+
   Future<void> play() async {
-    await _audioPlayer.play();
+    await _player.play();
   }
 
   Future<void> pause() async {
-    await _audioPlayer.pause();
+    await _player.pause();
   }
 
   Future<void> seekToNext() async {
-    if (_audioPlayer.hasNext) {
-      await _audioPlayer.seekToNext();
+    if (_player.hasNext) {
+      await _player.seekToNext();
     }
   }
 
   Future<void> seekToPrevious() async {
-    if (_audioPlayer.hasPrevious) {
-      await _audioPlayer.seekToPrevious();
+    if (_player.hasPrevious) {
+      await _player.seekToPrevious();
     }
   }
 
   Future<void> seekToStart() async {
-    await _audioPlayer.seek(
+    await _player.seek(
       Duration.zero,
-      index: _audioPlayer.effectiveIndices?.first,
+      index: _player.effectiveIndices?.first,
     );
   }
 
   Future<void> seekToIndex({
     required int index,
-    List<MediaModel> playList = const [],
+    List<MediaModel> playlist = const [],
   }) async {
-    if (playList.isNotEmpty) {
+    if (playlist.isNotEmpty) {
       // reload new playlist and play the song@index
-      emit(state.copyWith(playlist: playList));
-      await loadPlayList(playList: playList, index: index);
-      await _audioPlayer.play();
+      emit(state.copyWith(playlist: playlist));
+      await loadPlayList(playlist: playlist, index: index);
+      await _player.play();
     } else {
       // seek to a particular song@index with zero duration, and then play it
-      await _audioPlayer.seek(Duration.zero, index: index);
-      await _audioPlayer.play();
+      await _player.seek(Duration.zero, index: index);
+      await _player.play();
     }
     return;
   }
 
   @override
   Future<void> close() {
-    _audioPlayer.dispose();
+    _player.dispose();
     _audioStatusSub?.cancel();
     _indexSub?.cancel();
-    _songStateSub?.cancel();
     return super.close();
   }
 
-  Future<void> overwritePlaylistAndPlay(MediaModel media) async {
-    await loadPlayList(playList: [media]);
+  Future<void> overwritePlaylistAndPlay({
+    required List<MediaModel> playlist,
+    required int index,
+  }) async {
+    await loadPlayList(playlist: playlist, index: index);
     await play();
-    // emit(
-    //   MPAudioState(
-    //     playlist: [media],
-    //     currentIdx: 0,
-    //     status: const MPAudioStateStatus.idle(),
-    //   ),
-    // );
   }
 }

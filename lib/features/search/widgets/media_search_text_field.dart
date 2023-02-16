@@ -32,11 +32,10 @@ class _MediaSearchTextFieldState extends State<MediaSearchTextField> {
           Expanded(
             flex: 9,
             child: TextField(
-              key: const Key('__MediaSearchTextField__'),
               controller: _searchCtrl,
               style: Theme.of(context).textTheme.titleLarge,
               decoration: InputDecoration(
-                hintText: 'Search',
+                hintText: 'What do you want to listen to?',
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.clear),
                   onPressed: _searchCtrl.clear,

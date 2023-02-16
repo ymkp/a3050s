@@ -3,6 +3,7 @@ import 'package:a3050s/features/app/blocs/app_cubit.dart';
 import 'package:a3050s/features/bookmark/screens/bookmark_screen.dart';
 import 'package:a3050s/features/home/screens/home_screen.dart';
 import 'package:a3050s/features/media_player/widgets/media_player_bar.dart';
+
 import 'package:a3050s/features/search/screens/search_screen.dart';
 
 // import 'package:a3050s/modules/dependency_injection/di.dart';
@@ -43,15 +44,18 @@ class AppWrapper extends StatelessWidget {
           },
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
+              icon: Icon(Icons.home_outlined),
+              activeIcon: Icon(Icons.home),
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.search),
+              icon: Icon(Icons.search_outlined),
+              activeIcon: Icon(Icons.saved_search),
               label: 'Search',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.bookmark),
+              icon: Icon(Icons.bookmark_outline),
+              activeIcon: Icon(Icons.bookmark),
               label: 'Bookmark',
             ),
           ],

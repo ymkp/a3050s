@@ -70,13 +70,11 @@ Future<void> main() async {
       );
     },
     (exception, stackTrace) {
-      print(exception);
-      print(stackTrace);
-      // logIt.error(
-      //   'err',
-      //   error: exception,
-      //   stackTrace: stackTrace,
-      // );
+      logIt.error(
+        'err',
+        error: exception,
+        stackTrace: stackTrace,
+      );
       // TODO : create exception captures
     },
   );

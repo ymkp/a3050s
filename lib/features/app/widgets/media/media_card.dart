@@ -40,10 +40,10 @@ class MediaCard extends StatelessWidget {
                             Icons.explicit,
                             size: 15,
                           ),
-                        Text(
-                          media.kind,
-                          style: Theme.of(context).textTheme.labelMedium,
-                        ),
+                        // Text(
+                        //   media.kind,
+                        //   style: Theme.of(context).textTheme.labelMedium,
+                        // ),
                         Text(
                           media.artistName,
                           style: Theme.of(context).textTheme.labelMedium,
