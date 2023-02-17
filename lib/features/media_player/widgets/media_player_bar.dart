@@ -79,11 +79,8 @@ class MediaPlayerBar extends StatelessWidget {
                                   // ),
                                   Text(
                                     media.artistName,
-                                    style:
-                                        Theme.of(context).textTheme.labelMedium,
-                                  ),
-                                  Text(
-                                    media.collectionName ?? '',
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
                                     style:
                                         Theme.of(context).textTheme.labelMedium,
                                   ),

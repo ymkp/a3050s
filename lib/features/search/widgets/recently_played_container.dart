@@ -28,6 +28,7 @@ class RecentlyPlayedContainer extends StatelessWidget {
                 ),
                 Flexible(
                   child: ListView.builder(
+                    padding: const EdgeInsets.only(bottom: 50),
                     reverse: true,
                     itemCount: state.playlist.length,
                     shrinkWrap: true,

@@ -18,26 +18,37 @@ class MediaSearchResultContainer extends StatelessWidget {
           child: CircularProgressIndicator(),
         ),
         success: (results) => results.isNotEmpty
-            ? ListView.builder(
-                itemCount: results.length,
-                shrinkWrap: true,
-                itemBuilder: (context, idx) {
-                  return MediaCard(
-                    media: results[idx],
-                    isOnPlay: results[idx].trackId ==
-                        context.read<MPAudioCubit>().onPlay?.trackId,
-                    onTap: () {
-                      context.read<MPAudioCubit>().overwritePlaylistAndPlay(
-                            playlist: results,
-                            index: idx,
-                          );
-                      context
-                          .read<RecentlyPlayedCubit>()
-                          .addRecentlyPlayed(results[idx]);
-                      // logIt.info(results[idx].artistName);
-                    },
-                  );
-                },
+            ? BlocBuilder<MPAudioCubit, MPAudioState>(
+                builder: (context, audioState) => ListView.builder(
+                  padding: const EdgeInsets.only(bottom: 50),
+                  itemCount: results.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, idx) {
+                    return MediaCard(
+                      media: results[idx],
+                      // isOnPlay: results[idx].trackId ==
+                      //     context.read<MPAudioCubit>().onPlay?.trackId,
+                      isOnPlay: audioState.status.maybeWhen(
+                        playing: () =>
+                            audioState.playlist.isNotEmpty &&
+                            results[idx].trackId ==
+                                audioState
+                                    .playlist[audioState.currentIdx].trackId,
+                        orElse: () => false,
+                      ),
+                      onTap: () {
+                        context.read<MPAudioCubit>().overwritePlaylistAndPlay(
+                              playlist: results,
+                              index: idx,
+                            );
+                        context
+                            .read<RecentlyPlayedCubit>()
+                            .addRecentlyPlayed(results[idx]);
+                        // logIt.info(results[idx].artistName);
+                      },
+                    );
+                  },
+                ),
               )
             : const Center(child: Text('No items found')),
         failed: (s) => Center(child: Text(s)),

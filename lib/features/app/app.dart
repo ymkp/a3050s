@@ -5,6 +5,7 @@ import 'package:a3050s/features/search/blocs/media_search_cubit.dart';
 import 'package:a3050s/features/search/blocs/recently_played_cubit.dart';
 import 'package:a3050s/features/search/repositories/media_search_repository.dart';
 import 'package:a3050s/theme/app_theme.dart';
+import 'package:a3050s/utils/constants.dart';
 import 'package:a3050s/utils/methods/aliases.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,7 @@ class App extends StatelessWidget {
           BlocProvider(create: (context) => MPAudioCubit())
         ],
         child: MaterialApp.router(
+          title: $constants.appTitle,
           routerDelegate: AutoRouterDelegate(
             appRouter,
           ),
