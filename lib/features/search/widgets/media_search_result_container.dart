@@ -1,6 +1,9 @@
 import 'package:a3050s/features/app/widgets/media/media_card.dart';
 import 'package:a3050s/features/media_player/blocs/mp_audio_cubit.dart';
+
 import 'package:a3050s/features/search/blocs/media_search_cubit.dart';
+import 'package:a3050s/features/search/blocs/recently_played_cubit.dart';
+import 'package:a3050s/features/search/widgets/recently_played_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,9 +13,7 @@ class MediaSearchResultContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<MediaSearchCubit, MediaSearchState>(
       builder: (context, state) => state.when(
-        none: () => const Center(
-          child: Text('What do you want to listen to?\ntodo : recent search'),
-        ),
+        none: () => const RecentlyPlayedContainer(),
         loading: () => const Center(
           child: CircularProgressIndicator(),
         ),
@@ -23,17 +24,22 @@ class MediaSearchResultContainer extends StatelessWidget {
                 itemBuilder: (context, idx) {
                   return MediaCard(
                     media: results[idx],
+                    isOnPlay: results[idx].trackId ==
+                        context.read<MPAudioCubit>().onPlay?.trackId,
                     onTap: () {
                       context.read<MPAudioCubit>().overwritePlaylistAndPlay(
                             playlist: results,
                             index: idx,
                           );
+                      context
+                          .read<RecentlyPlayedCubit>()
+                          .addRecentlyPlayed(results[idx]);
                       // logIt.info(results[idx].artistName);
                     },
                   );
                 },
               )
-            : const Center(child: Text('e')),
+            : const Center(child: Text('No items found')),
         failed: (s) => Center(child: Text(s)),
       ),
     );

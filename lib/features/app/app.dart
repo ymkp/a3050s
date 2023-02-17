@@ -1,6 +1,8 @@
 import 'package:a3050s/features/app/blocs/app_cubit.dart';
 import 'package:a3050s/features/media_player/blocs/mp_audio_cubit.dart';
+
 import 'package:a3050s/features/search/blocs/media_search_cubit.dart';
+import 'package:a3050s/features/search/blocs/recently_played_cubit.dart';
 import 'package:a3050s/features/search/repositories/media_search_repository.dart';
 import 'package:a3050s/theme/app_theme.dart';
 import 'package:a3050s/utils/methods/aliases.dart';
@@ -26,6 +28,7 @@ class App extends StatelessWidget {
             create: (context) =>
                 MediaSearchCubit(context.read<MediaSearchRepository>()),
           ),
+          BlocProvider(create: (context) => RecentlyPlayedCubit()),
           BlocProvider(create: (context) => MPAudioCubit())
         ],
         child: MaterialApp.router(

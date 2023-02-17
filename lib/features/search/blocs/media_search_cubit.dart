@@ -47,11 +47,22 @@ class MediaSearchCubit extends Cubit<MediaSearchState> {
         );
   final MediaSearchRepository mediaSearchRepo;
 
+  String lastSearchTerm = '';
+
+  void setTermToRecentlyPlayed() {
+    lastSearchTerm = 'Recently Played';
+  }
+
+  void setStateToNone() {
+    emit(const MediaSearchState.none());
+  }
+
   Future<void> searchSong(String term) async {
     try {
       emit(const MediaSearchState.loading());
       final results = await mediaSearchRepo.searchSong(term);
       emit(MediaSearchState.success(results: results));
+      lastSearchTerm = term;
     } catch (err, stk) {
       logIt.error('err', stackTrace: stk, error: err);
       emit(MediaSearchState.failed(errorMsg: err.toString()));

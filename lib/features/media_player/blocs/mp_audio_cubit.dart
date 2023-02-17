@@ -26,6 +26,13 @@ class MPAudioCubit extends Cubit<MPAudioState> {
   bool get hasPrevious => _player.hasPrevious;
   bool get hasNext => _player.hasNext;
 
+  MediaModel? get onPlay => _onPlay();
+
+  MediaModel? _onPlay() {
+    if (state.playlist.isEmpty) return null;
+    return state.playlist.elementAt(state.currentIdx);
+  }
+
   Stream<PositionData> get positionDataStream =>
       Rx.combineLatest3<Duration, Duration, Duration?, PositionData>(
         _player.positionStream,

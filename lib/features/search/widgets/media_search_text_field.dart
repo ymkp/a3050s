@@ -38,7 +38,10 @@ class _MediaSearchTextFieldState extends State<MediaSearchTextField> {
                 hintText: 'What do you want to listen to?',
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.clear),
-                  onPressed: _searchCtrl.clear,
+                  onPressed: () {
+                    _searchCtrl.clear();
+                    context.read<MediaSearchCubit>().setStateToNone();
+                  },
                 ),
               ),
               textInputAction: TextInputAction.done,

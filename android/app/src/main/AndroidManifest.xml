@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.a3050s">
+    <uses-permission android:name="android.permission.INTERNET"/>
    <application
         android:label="a3050s"
         android:name="${applicationName}"

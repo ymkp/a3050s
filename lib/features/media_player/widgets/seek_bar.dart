@@ -3,6 +3,7 @@
 import 'dart:math';
 
 import 'package:a3050s/utils/constants.dart';
+import 'package:a3050s/utils/helpers/string_helper.dart';
 import 'package:flutter/material.dart';
 
 class SeekBar extends StatefulWidget {
@@ -108,10 +109,7 @@ class SeekBarState extends State<SeekBar> {
           left: 16,
           bottom: 0,
           child: Text(
-            RegExp(r'((^0*[1-9]\d*:)?\d{2}:\d{2})\.\d+$')
-                    .firstMatch("${widget.position}")
-                    ?.group(1) ??
-                '${widget.position}',
+            StringHelper.getDurationAsMinuteSeconds(widget.position),
             style: Theme.of(context)
                 .textTheme
                 .bodySmall!
@@ -122,10 +120,7 @@ class SeekBarState extends State<SeekBar> {
           right: 16,
           bottom: 0,
           child: Text(
-            RegExp(r'((^0*[1-9]\d*:)?\d{2}:\d{2})\.\d+$')
-                    .firstMatch("$_remaining")
-                    ?.group(1) ??
-                '$_remaining',
+            StringHelper.getDurationAsMinuteSeconds(_remaining),
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ),

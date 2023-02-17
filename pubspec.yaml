@@ -42,6 +42,7 @@ dependencies:
   #--------------------NETWORK
   cached_network_image:
   http:
+  url_launcher: ^6.1.9
 
   #--------------------NAVIGATIONS
   auto_route: ^5.0.4

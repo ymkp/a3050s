@@ -1,5 +1,7 @@
 import 'package:a3050s/features/app/models/media_model.dart';
 import 'package:a3050s/features/app/widgets/customs/custom_cached_image_container.dart';
+import 'package:a3050s/utils/constants.dart';
+import 'package:a3050s/utils/helpers/string_helper.dart';
 import 'package:flutter/material.dart';
 
 class MediaCard extends StatelessWidget {
@@ -7,9 +9,13 @@ class MediaCard extends StatelessWidget {
     super.key,
     required this.media,
     required this.onTap,
+    this.isOnPlay = false,
+    this.onRemoveTap,
   });
   final MediaModel media;
   final VoidCallback onTap;
+  final bool isOnPlay;
+  final VoidCallback? onRemoveTap;
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +52,8 @@ class MediaCard extends StatelessWidget {
                         // ),
                         Text(
                           media.artistName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.labelMedium,
                         ),
                       ],
@@ -54,20 +62,31 @@ class MediaCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              Text(
-                _getMediaTime(media.trackTimeMillis),
-                style: Theme.of(context).textTheme.labelMedium,
-              )
+              if (onRemoveTap != null)
+                IconButton(
+                  icon: Icon(
+                    Icons.clear,
+                    color: $constants.palette.grey,
+                  ),
+                  onPressed: onRemoveTap,
+                )
+              else
+                isOnPlay
+                    ? Image.asset(
+                        'assets/images/eq-small.gif',
+                        height: 30,
+                        width: 30,
+                      )
+                    : Text(
+                        StringHelper.getDurationAsMinuteSeconds(
+                          Duration(milliseconds: media.trackTimeMillis ?? 0),
+                        ),
+                        style: Theme.of(context).textTheme.labelMedium,
+                      )
             ],
           ),
         ),
       ),
     );
-  }
-
-  String _getMediaTime(int? trackTimeMillis) {
-    if (trackTimeMillis == null) return '';
-    final time = Duration(milliseconds: trackTimeMillis);
-    return '${time.inMinutes}:${time.inSeconds % 60}';
   }
 }

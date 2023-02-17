@@ -72,13 +72,18 @@ class MediaPlayerBar extends StatelessWidget {
                                       Icons.explicit,
                                       size: 15,
                                     ),
+                                  // Text(
+                                  //   media.kind,
+                                  //   style:
+                                  //       Theme.of(context).textTheme.labelMedium,
+                                  // ),
                                   Text(
-                                    media.kind,
+                                    media.artistName,
                                     style:
                                         Theme.of(context).textTheme.labelMedium,
                                   ),
                                   Text(
-                                    media.artistName,
+                                    media.collectionName ?? '',
                                     style:
                                         Theme.of(context).textTheme.labelMedium,
                                   ),

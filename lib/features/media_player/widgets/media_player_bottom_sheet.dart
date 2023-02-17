@@ -3,6 +3,7 @@ import 'package:a3050s/features/media_player/blocs/mp_audio_cubit.dart';
 import 'package:a3050s/features/media_player/models/position_data.dart';
 import 'package:a3050s/features/media_player/widgets/audio_playlist_control_buttons.dart';
 import 'package:a3050s/features/media_player/widgets/seek_bar.dart';
+import 'package:a3050s/features/search/blocs/media_search_cubit.dart';
 import 'package:a3050s/utils/constants.dart';
 import 'package:a3050s/utils/helpers/toast_helper.dart';
 import 'package:a3050s/utils/methods/aliases.dart';
@@ -80,7 +81,7 @@ class MediaPlayerBottomSheet extends StatelessWidget {
                                 ),
                           ),
                           Text(
-                            media.artistName,
+                            '"${context.read<MediaSearchCubit>().lastSearchTerm}" in search',
                             textAlign: TextAlign.center,
                             style: Theme.of(context).textTheme.bodyLarge,
                           ),
@@ -91,6 +92,19 @@ class MediaPlayerBottomSheet extends StatelessWidget {
                       iconSize: 30,
                       onPressed: () {
                         Navigator.pop(context);
+                        // showDialog<void>(
+                        //   context: context,
+                        //   builder: (context) => Dialog(
+                        //     child: MediaExternalDialog(
+                        //       artistName: media.artistName,
+                        //       artworkUrl: media.artworkUrl100 ?? '',
+                        //       collectionName: media.collectionName ?? '',
+                        //       externalUrl: media.trackViewUrl,
+                        //       price: '${media.currency} ${media.trackPrice}',
+                        //       trackName: media.trackName,
+                        //     ),
+                        //   ),
+                        // );
                       },
                       icon: const Icon(
                         Icons.more_vert,
@@ -137,6 +151,8 @@ class MediaPlayerBottomSheet extends StatelessWidget {
                                     ),
                                   Text(
                                     media.artistName,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                     style: Theme.of(context)
                                         .textTheme
                                         .labelMedium!
